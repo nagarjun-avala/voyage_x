@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server';
 export async function POST() {
     const cookieSet = await cookies()
 
-    cookieSet.delete('voyagex-session');
+    cookieSet.delete('session');
 
     return NextResponse.json({ message: 'Logged out' });
 }

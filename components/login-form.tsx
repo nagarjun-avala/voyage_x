@@ -44,7 +44,7 @@ export function LoginForm({
                 toast.error(res?.error?.message || "Login failed");
             }
             toast.success("Logged in successfully", {
-                description: "Welcome back, Nagarjun A",
+                description: `Welcome back, ${res?.data?.user.name || res?.data?.user.username}!`,
                 onAutoClose: () => {
                     router.push(roleRedirectMap[res?.data?.user.role] || "/dashboard");
                 }

@@ -120,3 +120,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom Print Styles */
+
+@media print {
+  .watermark {
+    opacity: 0.07;
+  }
+}

@@ -9,7 +9,7 @@ export type SessionPayload = {
     role: string;
 };
 
-const secretKey = process.env.JWT_SECRET ?? "default_secret_key";
+const secretKey = process.env.JWT_SECRET ?? "wsfksjfbslifbsifbsifb";
 const encodedKey = new TextEncoder().encode(secretKey)
 
 export async function createSession(userId: string, role: string) {
@@ -44,6 +44,8 @@ export async function encrypt(payload: SessionPayload): Promise<string> {
 
 export async function decrypt(session: string | undefined = '') {
     try {
+        if (session === '') return null;
+        if (!session) return null;
         const { payload } = await jwtVerify(session, encodedKey, {
             algorithms: ['HS256'],
         })

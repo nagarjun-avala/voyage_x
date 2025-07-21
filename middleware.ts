@@ -12,7 +12,14 @@ const protectedRoutes = [
     "/dashboard"
 ];
 
-const publicRoutes = ["/", "/login", "/register"];
+type SessionPayload = {
+    userId: string;
+    role: string;
+    expiresAt: string;
+};
+
+
+const publicRoutes = ["/", "/login", "/register", "/bookings/verify/[id]", "/bookings/verify"];
 
 export default async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
@@ -20,7 +27,7 @@ export default async function middleware(req: NextRequest) {
     const isPublicRoute = publicRoutes.includes(path);
 
     const cookie = (await cookies()).get("session")?.value;
-    const session = await decrypt(cookie);
+    const session = await decrypt(cookie) as SessionPayload | null;
 
     // console.log("SESSION: ", { session, isPublicRoute, isProtectedRoute, path });
 
