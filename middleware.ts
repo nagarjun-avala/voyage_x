@@ -6,10 +6,10 @@ import { roleRedirectMap } from "@/lib/roleRedirect";
 
 const protectedRoutes = [
     "/admin",
-    "/manager",
+    "/bookings",
     "/headcook",
+    "/manager",
     "/supervisor",
-    "/dashboard"
 ];
 
 type SessionPayload = {
@@ -19,7 +19,7 @@ type SessionPayload = {
 };
 
 
-const publicRoutes = ["/", "/login", "/register", "/bookings/verify/[id]", "/bookings/verify"];
+const publicRoutes = ["/", "/login", "/register"];
 
 export default async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
@@ -38,7 +38,7 @@ export default async function middleware(req: NextRequest) {
 
     // User is logged in and accessing a public route
     if (isPublicRoute && session?.userId) {
-        const redirectPath = roleRedirectMap[session.role] || "/dashboard";
+        const redirectPath = roleRedirectMap[session.role] || "/bookings";
         return NextResponse.redirect(new URL(redirectPath, req.nextUrl));
     }
     // User is logged in but trying to access a different role's route
@@ -47,7 +47,7 @@ export default async function middleware(req: NextRequest) {
         !publicRoutes.includes(path) &&
         !path.startsWith(roleRedirectMap[session.role])
     ) {
-        const correctPath = roleRedirectMap[session.role] || "/dashboard";
+        const correctPath = roleRedirectMap[session.role] || "/bookings";
         return NextResponse.redirect(new URL(correctPath, req.nextUrl));
     }
 

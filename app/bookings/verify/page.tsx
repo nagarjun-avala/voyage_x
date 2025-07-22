@@ -1,12 +1,16 @@
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { format } from "date-fns"
+import { decodeBookingToken } from "@/lib/bookingToken";
 
 export default async function VerifyBookingPage({ params }: { params: { id: string } }) {
+    const token = params.id;
+    const decoded = await decodeBookingToken(token);
+
     const booking = await prisma.booking.findUnique({
-        where: { id: params.id },
+        where: { id: decoded?.id },
         include: { room: true },
-    })
+    });
 
     if (!booking) return notFound()
 

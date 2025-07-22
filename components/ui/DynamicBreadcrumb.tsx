@@ -67,9 +67,9 @@ export default function DynamicBreadcrumb() {
     const segments = path.split("/").filter(Boolean);
 
     return (
-        <Breadcrumb className="mb-4">
+        <Breadcrumb>
             <BreadcrumbList>
-                <BreadcrumbItem>
+                <BreadcrumbItem className="hidden md:block">
                     <BreadcrumbLink asChild>
                         <Link href="/">Home</Link>
                     </BreadcrumbLink>
@@ -83,7 +83,7 @@ export default function DynamicBreadcrumb() {
 
                     return (
                         <React.Fragment key={seg}>
-                            <BreadcrumbSeparator />
+                            <BreadcrumbSeparator className="hidden md:block" />
                             <BreadcrumbItem>
                                 {isLast ? (
                                     <BreadcrumbPage>{label}</BreadcrumbPage>

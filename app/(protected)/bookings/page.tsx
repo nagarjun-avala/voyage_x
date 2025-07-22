@@ -21,6 +21,8 @@ export default async function VoyagerBookingsPage() {
         orderBy: { createdAt: "desc" },
     });
 
+    // TODO: list all booking in form of data table with pagination
+
     return (
         <div className="space-y-4">
             <h1 className="text-2xl font-bold">My Bookings</h1>
