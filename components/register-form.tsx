@@ -12,14 +12,13 @@ import {
 import { Label } from "@/components/ui/label"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import Link from "next/link";
 import { RegisterFormSchema, RegisterFormState } from "@/lib/definitions"
+import axios from "axios"
 
 export function RegisterForm({
     className,
@@ -39,15 +38,19 @@ export function RegisterForm({
     const onSubmit = async (data: RegisterFormState) => {
         setLoading(true);
         try {
-            // const res = await axios.post("/api/auth/register", data);
-            toast.success("Regestered successfully", {
-                description: "Welcome Greatings, Nagarjun A",
+            const res = await axios.post("/api/auth/register", data);
+            toast.success("Registered successfully", {
+                description: `Welcome Greatings, ${res?.data?.user.name || res?.data?.user.username}, Please login to continue!`,
                 onAutoClose: () => {
                     router.push("/login");
                 }
             });
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Register failed");
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                toast.error(err.response?.data?.message || "Register failed");
+            } else {
+                toast.error("Register failed");
+            }
         } finally {
             setLoading(false);
         }

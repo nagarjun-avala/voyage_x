@@ -13,17 +13,17 @@ import {
 } from "./breadcrumb";
 import React from "react";
 
-const routeLabelMap: Record<string, string> = {
-    admin: "Admin",
-    manager: "Manager",
-    headcook: "Head Cook",
-    supervisor: "Supervisor",
-    dashboard: "Dashboard",
-    users: "Users",
-    payments: "Payments",
-    voyages: "Voyages",
-    logs: "Logs",
-};
+// const routeLabelMap: Record<string, string> = {
+//     admin: "Admin",
+//     manager: "Manager",
+//     headcook: "Head Cook",
+//     supervisor: "Supervisor",
+//     dashboard: "Dashboard",
+//     users: "Users",
+//     payments: "Payments",
+//     voyages: "Voyages",
+//     logs: "Logs",
+// };
 
 // DynamicBreadcrumb.tsx
 
@@ -56,7 +56,7 @@ export function getPageMetaFromPath(pathname: string) {
 
 const isId = (value: string) => /^[a-f\d]{24}$/i.test(value) || /^\d+$/.test(value);
 
-export function getBreadcrumbLabel(segment: string, prev: string): string {
+export function getBreadcrumbLabel(segment: string): string {
     if (isId(segment)) return `#${segment}`;
     return routeMetaMap[segment]?.label || decodeURIComponent(segment);
 }
@@ -78,7 +78,7 @@ export default function DynamicBreadcrumb() {
                 {segments.map((seg, idx) => {
                     const isLast = idx === segments.length - 1;
                     const href = "/" + segments.slice(0, idx + 1).join("/");
-                    const label = getBreadcrumbLabel(seg, segments[idx - 1]);
+                    const label = getBreadcrumbLabel(seg);
 
 
                     return (

@@ -1,28 +1,31 @@
-import { SignJWT, jwtVerify } from "jose";
+// File: lib/bookingToken.ts
+"use server";
 
-const secret = process.env.JWT_SECRET || "supersecretkey";
-const key = new TextEncoder().encode(secret);
+import { jwtVerify, SignJWT } from "jose";
 
-type BookingTokenPayload = {
+const secret = new TextEncoder().encode(process.env.JWT_SECRET || "secret");
+
+export async function generateBookingToken(payload: {
     id: string;
     guestName: string;
     guestEmail: string;
-};
-
-export async function generateBookingToken(data: BookingTokenPayload) {
-    const token = await new SignJWT(data)
+}) {
+    return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
-        .setExpirationTime("24h")
-        .sign(key);
-    return token;
+        .setIssuedAt()
+        .setExpirationTime("7d")
+        .sign(secret);
 }
 
-export async function decodeBookingToken(token: string): Promise<BookingTokenPayload | null> {
+export async function verifyBookingToken(token: string) {
     try {
-        const { payload } = await jwtVerify(token, key);
-        return payload as BookingTokenPayload;
-    } catch (err) {
-        console.error("Invalid booking token", err);
+        const { payload } = await jwtVerify(token, secret);
+        return payload as {
+            id: string;
+            guestName: string;
+            guestEmail: string;
+        };
+    } catch {
         return null;
     }
 }

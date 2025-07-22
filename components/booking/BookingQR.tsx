@@ -1,56 +1,62 @@
 // File: components/booking/BookingQR.tsx
-'use client'
+"use client";
 
-import { useEffect, useRef } from 'react'
-import QRCodeStyling from 'qr-code-styling'
-import { generateBookingToken } from '@/lib/bookingToken'
-import { Booking } from '@prisma/client'
+import { useEffect, useRef } from 'react';
+import QRCodeStyling from 'qr-code-styling';
+import { Booking } from '@prisma/client';
 
-const logoImage = "/logo.png" // must be in public folder
+const logoImage = "/logo.png";
 
 type BookingQRProps = {
-    booking: Pick<Booking, 'id' | 'guestName' | 'guestEmail'>
-}
+    booking: Pick<Booking, 'id' | 'guestName' | 'guestEmail'>;
+    width?: number;
+    height?: number;
+};
 
-export function BookingQR({ booking }: BookingQRProps) {
-    const ref = useRef<HTMLDivElement>(null)
+export function BookingQR({ booking, width = 220, height = 220 }: BookingQRProps) {
+    const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        async function generateQR() {
-            const token = await generateBookingToken({
-                id: booking.id,
-                guestName: booking.guestName,
-                guestEmail: booking.guestEmail,
-            })
+        async function renderQR() {
+            const res = await fetch('/api/bookings/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(booking),
+            });
+
+            const { token } = await res.json();
 
             const qr = new QRCodeStyling({
-                width: 220,
-                height: 220,
-                type: 'svg',
-                data: `${window.location.origin}/bookings/verify?token=${token}`,
+                width: width,
+                height: height,
+                type: "svg",
+                data: `${process.env.NEXT_PUBLIC_BASE_URL}/bookings/verify?token=${token}`,
                 image: logoImage,
                 dotsOptions: {
-                    color: '#000',
-                    type: 'rounded',
+                    color: "#000000",
+                    type: "rounded",
                 },
                 imageOptions: {
-                    crossOrigin: 'anonymous',
-                    margin: 8,
+                    crossOrigin: "anonymous",
+                    margin: 10,
                 },
-            })
+            });
 
-            ref.current?.innerHTML && (ref.current.innerHTML = '')
-            qr.append(ref.current!)
+            if (ref.current) {
+                ref.current.innerHTML = "";
+                qr.append(ref.current);
+            }
         }
-        generateQR()
-    }, [booking])
+
+        renderQR();
+    }, [booking, height, width]);
 
     return (
         <div className="flex flex-col items-center space-y-2">
-            <div ref={ref} />
+            <div ref={ref} className="w-[220px] h-[220px]" />
             <p className="text-sm text-muted-foreground text-center max-w-xs">
                 Scan to verify this booking with VoyageX
             </p>
         </div>
-    )
+    );
 }

@@ -29,6 +29,9 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation"
+import axios from "axios"
+import { toast } from "sonner"
 
 export function NavUser({
     user,
@@ -40,6 +43,14 @@ export function NavUser({
     }
 }) {
     const { isMobile } = useSidebar()
+
+    const router = useRouter();
+
+    async function handleLogout() {
+        await axios.post("/api/auth/logout");
+        toast.success("Logged out");
+        router.push("/login");
+    }
 
     return (
         <SidebarMenu>
@@ -102,7 +113,7 @@ export function NavUser({
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleLogout}>
                             <LogOut />
                             Log out
                         </DropdownMenuItem>

@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
 
     try {
-        await prisma.booking.create({
+        const booking = await prisma.booking.create({
             data: {
                 title,
                 guestName,
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
         });
 
 
-        return NextResponse.json({ ok: true });
+        return NextResponse.json({ success: true, booking }, { status: 201 });
     } catch (e) {
         console.error(e);
         return NextResponse.json({ error: "Failed to create booking" }, { status: 500 });

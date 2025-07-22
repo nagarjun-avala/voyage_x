@@ -1,6 +1,7 @@
 // app/(protected)/dashboard/bookings/new/page.tsx
 
 import BookingForm from "@/components/booking/BookingForm";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
@@ -9,9 +10,13 @@ export default async function NewBookingPage() {
     if (!session?.userId) redirect("/login");
 
     return (
-        <div className="max-w-xl space-y-4">
-            <h1 className="text-2xl font-bold">New Booking</h1>
-            <BookingForm />
-        </div>
+        <Card>
+            <CardHeader>
+                <h2 className="text-lg font-semibold">Create New Booking</h2>
+            </CardHeader>
+            <CardContent>
+                <BookingForm />
+            </CardContent>
+        </Card >
     );
 }

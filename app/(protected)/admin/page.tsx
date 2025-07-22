@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IndianRupee, User, Activity } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { format, subDays } from "date-fns";
+import { format } from "date-fns";
 import { Metadata } from "next";
 import { formatCurrency } from "@/lib/utils";
 

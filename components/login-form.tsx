@@ -40,17 +40,22 @@ export function LoginForm({
         setLoading(true);
         try {
             const res = await axios.post("/api/auth/login", data);
-            if (res?.error) {
-                toast.error(res?.error?.message || "Login failed");
+            if (res?.data?.error) {
+                toast.error(res.data.error.message || "Login failed");
+            } else {
+                toast.success("Logged in successfully", {
+                    description: `Welcome back, ${res?.data?.user.name || res?.data?.user.username}!`,
+                    onAutoClose: () => {
+                        router.push(roleRedirectMap[res?.data?.user.role] || "/dashboard");
+                    }
+                });
             }
-            toast.success("Logged in successfully", {
-                description: `Welcome back, ${res?.data?.user.name || res?.data?.user.username}!`,
-                onAutoClose: () => {
-                    router.push(roleRedirectMap[res?.data?.user.role] || "/dashboard");
-                }
-            });
-        } catch (err: any) {
-            toast.error(err?.response?.data?.message || "Login failed");
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                toast.error(err.response?.data?.message || "Login failed");
+            } else {
+                toast.error("Login failed");
+            }
         } finally {
             setLoading(false);
         }
