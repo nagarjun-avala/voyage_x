@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
     const booking = await prisma.booking.findUnique({
-        where: { id: params.id },
+        where: { id: await params.id },
         select: { id: true, title: true },
     });
 

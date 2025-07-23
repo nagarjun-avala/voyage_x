@@ -8,7 +8,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
             data: { status: "CANCELLED" },
         });
 
-        return NextResponse.redirect(new URL("/dashboard/bookings", req.url));
+        return NextResponse.redirect(new URL("/bookings", req.url));
     } catch {
         return NextResponse.json({ error: "Failed to cancel booking" }, { status: 500 });
     }

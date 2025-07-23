@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
-import { CircleCheck, Eye, Loader, ScrollText } from "lucide-react";
+import { CircleCheck, Loader, ScrollText, CircleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
@@ -52,17 +52,19 @@ export default async function VoyagerBookingsPage() {
                                     <CardTitle className="flex items-center justify-between text-base">
                                         {booking.title}
                                         <Badge
-                                            className="ml-2 text-muted-foreground"
+                                            className="ml-2"
                                             variant={
-                                                booking.status === "CONFIRMED" ? "success" : "outline"
+                                                booking.status === "CONFIRMED" ? "success" : booking.status === "CANCELLED" ? "destructive" : "default"
                                             }
                                         >
                                             {booking.status === "CONFIRMED" ? (
                                                 <CircleCheck className="fill-green-500 dark:fill-green-400" />
+                                            ) : booking.status === "CANCELLED" ? (
+                                                <CircleAlert />
                                             ) : (
                                                 <Loader className="mr-2 h-4 w-4 animate-spin" />
                                             )}
-                                            {booking.status === "CONFIRMED" ? "Confirmed" : "Pending"}
+                                            {booking.status === "CONFIRMED" ? "Confirmed" : booking.status === "CANCELLED" ? "Cancelled" : "Pending"}
                                         </Badge>
                                     </CardTitle>
                                     <p className="text-xs text-muted-foreground">
@@ -101,16 +103,16 @@ export default async function VoyagerBookingsPage() {
                                     <div className="flex justify-between items-center space-x-2 float-end">
                                         <Link href={`/bookings/${booking.id}`}>
                                             <Button variant="outline" size="sm" className="text-xs">
-                                                <Eye className="h-4 w-4" />
+                                                {/* <Eye className="h-4 w-4" /> */}
+                                                <ScrollText className="h-4 w-4" />
                                                 View Details
                                             </Button>
                                         </Link>
-                                        <Link href={`/bookings/${booking.id}/receipt`}>
+                                        {/* <Link href={`/bookings/${booking.id}/receipt`}>
                                             <Button variant="outline" size="sm" className="text-xs">
-                                                <ScrollText className="h-4 w-4" />
                                                 View Receipt
                                             </Button>
-                                        </Link>
+                                        </Link> */}
                                     </div>
                                 </CardFooter>
                             </Card>

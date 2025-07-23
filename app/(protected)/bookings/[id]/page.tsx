@@ -17,15 +17,21 @@ export const generateMetadata = (): Metadata => ({
     title: `Admin | VoyageX`,
 });
 
-export default async function BookingDetailPage({ params }: { params: { id: string } }) {
+type PageProps = {
+    params: {
+        id: string;
+    };
+};
+
+export default async function BookingDetailPage({ params }: PageProps) {
     const session = await getSession();
     if (!session?.userId) {
         return <div className="text-red-500">Unauthorized</div>;
     }
-    if (!params.id) {
+    const bookingId = await params.id;
+    if (!bookingId) {
         return notFound();
     }
-    const bookingId = await params.id;
     const booking = await prisma.booking.findUnique({
         where: { id: bookingId },
         include: {
@@ -34,6 +40,7 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
     });
 
     if (!booking || session?.userId !== booking.userId) notFound();
+
 
     return (
         <Card>
@@ -144,7 +151,7 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
                             Notes: {booking.notes}
                         </p>
                     )}
-                    <form action={`/api/dashboard/bookings/${bookingId}/cancel`} method="POST" className="float-end md:float-left mt-3">
+                    <form action={`/api/bookings/${bookingId}/cancel`} method="POST" className="float-end md:float-left mt-3">
                         <Button variant="destructive" type="submit" className="cursor-pointer text-xs" size="sm">
                             <Trash2 className="h-4 w-4" />
                             Cancel Booking
@@ -153,14 +160,6 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
                 </div>
                 <div className="flex-1 flex flex-col justify-between">
                     <BookingQR booking={{ id: booking.id, guestName: booking.guestName, guestEmail: booking.guestEmail }} />
-                    {/* <ReceiptPrint booking={booking} /> */}
-
-                    <Link href={`/bookings/${booking.id}/receipt`} className="float-end">
-                        <Button variant="outline" size="sm" className="cursor-pointer text-xs">
-                            <Eye className="h-4 w-4" />
-                            View Receipt
-                        </Button>
-                    </Link>
                 </div>
             </CardContent>
         </Card >
