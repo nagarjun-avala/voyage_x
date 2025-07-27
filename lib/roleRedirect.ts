@@ -3,5 +3,5 @@ export const roleRedirectMap: Record<string, string> = {
     MANAGER: "/manager",
     HEADCOOK: "/headcook",
     SUPERVISOR: "/supervisor",
-    VOYAGER: "/bookings",
+    VOYAGER: "/voyager",
 };

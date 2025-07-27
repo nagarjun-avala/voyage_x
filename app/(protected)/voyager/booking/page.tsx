@@ -1,4 +1,5 @@
 // app/(protected)/dashboard/bookings/page.tsx
+
 import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import {
@@ -12,10 +13,16 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
-import { CircleCheck, Loader, ScrollText, CircleAlert } from "lucide-react";
+import { CircleCheck, Loader, ScrollText, CircleAlert, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
+
+const newBookingButton = () => (
+    <Button variant="outline" className="ml-auto" onClick={() => window.location.href = "/bookings/new"}>
+        <Plus className="mr-2" /> New Booking
+    </Button>
+);
 
 export default async function VoyagerBookingsPage() {
     const session = await getSession();
@@ -29,13 +36,16 @@ export default async function VoyagerBookingsPage() {
         orderBy: { createdAt: "desc" },
     });
 
-    // TODO: list all booking in form of data table with pagination
-
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="text-base border-b pb-4">
+                <CardTitle className="text-base border-b pb-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">My Bookings</h1>
+                    <Link href="/bookings/new">
+                        <Button variant="outline" className="ml-auto cursor-pointer">
+                            <Plus className="mr-2" /> New Booking
+                        </Button>
+                    </Link>
                 </CardTitle>
             </CardHeader>
             <CardContent>

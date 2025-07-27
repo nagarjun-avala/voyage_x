@@ -2,6 +2,7 @@
 import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export const runtime = "nodejs";
 
@@ -9,6 +10,7 @@ export async function GET() {
     const session = await getSession();
 
     if (!session?.userId) {
+        (await cookies()).delete("session"); // Clear session cookie if user is not logged in
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -25,6 +27,7 @@ export async function GET() {
     });
 
     if (!user) {
+        (await cookies()).delete("session"); // Clear session cookie if user is not logged in
         return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 

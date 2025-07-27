@@ -5,10 +5,10 @@ import { decrypt } from "@/lib/session";
 import { roleRedirectMap } from "@/lib/roleRedirect";
 
 const protectedRoutes = [
+    "/voyager",
     "/admin",
-    "/bookings",
-    "/headcook",
     "/manager",
+    "/headcook",
     "/supervisor",
 ];
 
@@ -38,7 +38,7 @@ export default async function middleware(req: NextRequest) {
 
     // User is logged in and accessing a public route
     if (isPublicRoute && session?.userId) {
-        const redirectPath = roleRedirectMap[session.role] || "/bookings";
+        const redirectPath = roleRedirectMap[session.role] || "/voyager";
         return NextResponse.redirect(new URL(redirectPath, req.nextUrl));
     }
     // User is logged in but trying to access a different role's route
@@ -47,7 +47,7 @@ export default async function middleware(req: NextRequest) {
         !publicRoutes.includes(path) &&
         !path.startsWith(roleRedirectMap[session.role])
     ) {
-        const correctPath = roleRedirectMap[session.role] || "/bookings";
+        const correctPath = roleRedirectMap[session.role] || "/voyager";
         return NextResponse.redirect(new URL(correctPath, req.nextUrl));
     }
 

@@ -24,6 +24,7 @@ export function useSession() {
                 setUser(res.data);
             } catch {
                 setUser(null);
+                window.location.href = "/login"; // Redirect to login if not authenticated
             } finally {
                 setLoading(false);
             }

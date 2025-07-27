@@ -32,7 +32,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const session = useSession();
     const { user } = session;
     if (!user) return null;
-    const roleSidebar = sidebarConfig[user.role as Role];
+    const roleSidebarLinks = sidebarConfig[user.role as Role];
 
     return (
         <Sidebar collapsible="offcanvas" {...props}>
@@ -58,7 +58,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarHeader>
 
             <SidebarContent className="gap-0">
-                {roleSidebar.map((section) => (
+                {roleSidebarLinks.map((section) => (
                     <Collapsible key={section.label} defaultOpen className="group/collapsible">
                         <SidebarGroup>
                             <SidebarGroupLabel

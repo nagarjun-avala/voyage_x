@@ -94,24 +94,22 @@ model User {
   contact   String?
   lastLogin DateTime?
   auditLogs AuditLog[]
-  orders    Order[]
   bookings  Booking[]
-  messages  Message[]  @relation("UserMessages")
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  Payment   Payment[]
+  orders    Order[]    @relation("UserOrders")
 }
 
 model Order {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  user       User      @relation(fields: [userId], references: [id])
-  userId     String    @db.ObjectId
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  status     OrderStatus @default(PENDING)
+  userId     String      @db.ObjectId
+  orderedBy  User        @relation("UserOrders", fields: [userId], references: [id])
   type       OrderType
-  items      Json
-  status     String    @default("PENDING")
+  items      OrderItem[] @relation("OrderItemsOnOrder")
   totalPrice Float
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }
 
 model Booking {
@@ -148,28 +146,6 @@ model AuditLog {
   updatedAt DateTime @updatedAt
 }
 
-model Message {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  sender    User     @relation("UserMessages", fields: [senderId], references: [id])
-  senderId  String   @db.ObjectId
-  content   String
-  createdAt DateTime @default(now())
-}
-
-model Payment {
-  id        String          @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String          @db.ObjectId
-  user      User            @relation(fields: [userId], references: [id])
-  amount    Float
-  currency  String          @default("INR")
-  status    PaymentStatus
-  provider  PaymentProvider
-  method    PaymentMethod?
-  invoiceId String?
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-}
-
 model Room {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
@@ -181,4 +157,46 @@ model Room {
   updatedAt     DateTime @updatedAt
 
   bookings Booking[]
+}
+
+model OrderItem {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+  quantity  Int
+  unit      String? // optional: PCS, PACK, etc.
+  notes     String? // optional additional info
+  order     Order?  @relation("OrderItemsOnOrder", fields: [orderId], references: [id])
+  orderId   String? @db.ObjectId
+}
+
+enum OrderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  RECEIVED
+}
+
+enum ProductCategory {
+  CATERING
+  STATIONERY
+  GIFT
+  CHOCOLATE
+  BOOK
+  OTHER
+}
+
+model Product {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  category    ProductCategory
+  price       Float
+  stock       Int             @default(0)
+  imageUrl    String?
+  metadata    Json? // ← flexible field for dynamic item details
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  OrderItem OrderItem[]
 }

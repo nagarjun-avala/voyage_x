@@ -7,6 +7,9 @@ import {
     UserCog,
     BookOpen,
     CalendarIcon,
+    List,
+    ScrollText,
+    SquareMenu,
 } from "lucide-react";
 
 export type Role = "ADMIN" | "MANAGER" | "HEADCOOK" | "SUPERVISOR" | "VOYAGER";
@@ -15,6 +18,7 @@ export type SidebarItem = {
     title: string;
     href: string;
     icon: React.ReactNode;
+    active?: boolean;
 };
 
 export type SidebarSection = {
@@ -23,25 +27,107 @@ export type SidebarSection = {
 };
 
 export const sidebarConfig: Record<Role, SidebarSection[]> = {
+    VOYAGER: [
+        {
+            label: "Orders",
+            items: [
+                {
+                    title: "Orders",
+                    href: "/voyager",
+                    icon: <List className="w-5 h-5" />
+                },
+                {
+                    title: "Order catering",
+                    href: "/voyager/catering",
+                    icon: <CalendarIcon className="w-5 h-5" />
+                },
+                {
+                    title: "Order stationery",
+                    href: "/voyager/stationery",
+                    icon: <CalendarIcon className="w-5 h-5" />
+                }
+            ]
+        },
+        {
+            label: "Bookings",
+            items: [
+                {
+                    title: "Bookings",
+                    href: "/voyager",
+                    icon: <CalendarIcon className="w-5 h-5" />
+                },
+                {
+                    title: "New Booking",
+                    href: "/voyager/new",
+                    icon: <CalendarIcon className="w-5 h-5" />
+                },
+                {
+                    title: "Book movie",
+                    href: "/voyager/movie",
+                    icon: <CalendarIcon className="w-5 h-5" />
+                },
+                {
+                    title: "Book saloon",
+                    href: "/voyager/saloon",
+                    icon: <CalendarIcon className="w-5 h-5" />
+                },
+                {
+                    title: "Book fitness center",
+                    href: "/voyager/fitness",
+                    icon: <CalendarIcon className="w-5 h-5" />
+                },
+                {
+                    title: "Book party hall",
+                    href: "/voyager/party",
+                    icon: <CalendarIcon className="w-5 h-5" />
+                },
+            ]
+        }
+    ],
     ADMIN: [
         {
             label: "General",
             items: [
                 {
                     title: "Dashboard",
-                    href: "/dashboard",
+                    href: "/admin",
                     icon: <LayoutDashboard className="w-5 h-5" />,
                 },
                 {
                     title: "Bookings",
-                    href: "/dashboard/bookings",
+                    href: "/admin/bookings",
                     icon: <CalendarIcon className="w-5 h-5" />,
-                }
+                },
+                {
+                    title: "Products Menu",
+                    href: "/admin/products",
+                    icon: <SquareMenu className="w-5 h-5" />,
+                },
+                {
+                    title: "Add Product",
+                    href: "/admin/products/new",
+                    icon: <List className="w-5 h-5" />,
+                },
+                {
+                    title: "Edit/Delete Product",
+                    href: "/admin/products/[id]",
+                    icon: <List className="w-5 h-5" />,
+                },
+                {
+                    title: "Maintain Menu Items",
+                    href: "/admin/menu",
+                    icon: <ScrollText className="w-5 h-5" />,
+                },
             ]
         },
         {
             label: "Management",
             items: [
+                {
+                    title: "Voyage registration",
+                    href: "/admin/voyages/new",
+                    icon: <Users className="w-5 h-5" />,
+                },
                 {
                     title: "Users",
                     href: "/admin/users",
@@ -99,28 +185,13 @@ export const sidebarConfig: Record<Role, SidebarSection[]> = {
             label: "General",
             items: [
                 {
-                    title: "Dashboard",
-                    href: "/dashboard",
-                    icon: <LayoutDashboard className="w-5 h-5" />,
+                    title: "Stationery Orders",
+                    href: "/supervisor",
+                    icon: <ClipboardList className="w-5 h-5" />,
+                    active: false,
                 }
             ]
         }
     ],
-    VOYAGER: [
-        {
-            label: "Bookings",
-            items: [
-                {
-                    title: "Bookings",
-                    href: "/bookings",
-                    icon: <CalendarIcon className="w-5 h-5" />
-                },
-                {
-                    title: "New Booking",
-                    href: "/bookings/new",
-                    icon: <CalendarIcon className="w-5 h-5" />
-                },
-            ]
-        }
-    ]
+
 };
