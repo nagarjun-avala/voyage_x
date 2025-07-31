@@ -2,6 +2,9 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import PageHeader from "@/components/ui/PageHeader";
+import { useRouter } from 'next/router'
+import { useEffect, useState } from "react";
+import { Booking } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -16,10 +19,20 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     };
 }
 
-export default async function BookingDetailPage({ params }: { params: { id: string } }) {
-    const booking = await prisma.booking.findUnique({
-        where: { id: params.id },
-    });
+export default function BookingDetailPage() {
+    const [booking, setBooking] = useState<Booking | null>(null)
+    const router = useRouter()
+    const id = router.query.id as string
+
+    useEffect(() => {
+        async function getBookings() {
+            const bookingData = await prisma.booking.findUnique({
+                where: { id: id },
+            });
+            setBooking(bookingData)
+        }
+        getBookings()
+    })
 
     if (!booking) notFound();
 

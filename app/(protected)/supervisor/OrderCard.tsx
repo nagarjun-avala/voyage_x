@@ -15,11 +15,7 @@ import {
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import {
     arrayMove,
-    SortableContext,
-    useSortable,
-    verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
 import {
     IconChevronDown,
     IconChevronLeft,
@@ -28,7 +24,6 @@ import {
     IconChevronsRight,
     IconCircleCheckFilled,
     IconDotsVertical,
-    IconGripVertical,
     IconLayoutColumns,
     IconLoader,
     IconPlus,
@@ -43,7 +38,6 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    Row,
     SortingState,
     useReactTable,
     VisibilityState,
@@ -82,7 +76,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { CheckCheck, CheckCircle, CircleCheck, CircleX, Eye } from "lucide-react"
+import { CheckCircle, CircleCheck, CircleX, Eye } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 import { format } from "date-fns"
 
