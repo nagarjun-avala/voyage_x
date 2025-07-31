@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { formatCurrency } from "@/lib/utils"
-import { ShoppingCart } from "lucide-react"
+import { ShoppingBasket } from "lucide-react"
 import { toast } from "sonner"
 
 export default function VoyagerMenuWithCartPage() {
@@ -68,7 +68,6 @@ export default function VoyagerMenuWithCartPage() {
 
     const handlePlaceOrder = async () => {
         const payload = {
-            type: "CATERING",
             items: checkoutItems.map((item) => ({
                 productId: item?.id,
                 name: item?.name,
@@ -105,7 +104,7 @@ export default function VoyagerMenuWithCartPage() {
                 <Dialog open={checkoutOpen} onOpenChange={setCheckoutOpen}>
                     <DialogTrigger asChild>
                         <Button variant="outline" className="relative">
-                            <ShoppingCart />
+                            <ShoppingBasket />
                             <Badge
                                 className="absolute -right-1.5 -top-1.5 h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
                                 variant="destructive"

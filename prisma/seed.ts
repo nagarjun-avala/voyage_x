@@ -129,9 +129,11 @@ async function main() {
     // 🧹 Clear existing records
     await prisma.auditLog.deleteMany();
     await prisma.booking.deleteMany();
-    await prisma.message.deleteMany();
+    await prisma.room.deleteMany();
     await prisma.order.deleteMany();
+    await prisma.orderItem.deleteMany();
     await prisma.user.deleteMany();
+    await prisma.product.deleteMany();
     console.log("🧹✅ Existing records cleared.");
 
     // 🧑‍🤝‍🧑 Seed test users

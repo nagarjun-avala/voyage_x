@@ -21,11 +21,6 @@ enum Role {
   SUPERVISOR
 }
 
-enum OrderType {
-  CATERING
-  STATIONERY
-}
-
 enum BookingType {
   MOVIE
   RESORT
@@ -81,6 +76,22 @@ enum MealPlan {
   ALL_INCLUSIVE
 }
 
+enum OrderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  RECEIVED
+}
+
+enum ProductCategory {
+  CATERING
+  STATIONERY
+  GIFT
+  CHOCOLATE
+  BOOK
+  OTHER
+}
+
 model User {
   id        String     @id @default(auto()) @map("_id") @db.ObjectId
   name      String
@@ -105,7 +116,6 @@ model Order {
   status     OrderStatus @default(PENDING)
   userId     String      @db.ObjectId
   orderedBy  User        @relation("UserOrders", fields: [userId], references: [id])
-  type       OrderType
   items      OrderItem[] @relation("OrderItemsOnOrder")
   totalPrice Float
   createdAt  DateTime    @default(now())
@@ -170,22 +180,6 @@ model OrderItem {
   orderId   String? @db.ObjectId
 }
 
-enum OrderStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  RECEIVED
-}
-
-enum ProductCategory {
-  CATERING
-  STATIONERY
-  GIFT
-  CHOCOLATE
-  BOOK
-  OTHER
-}
-
 model Product {
   id          String          @id @default(auto()) @map("_id") @db.ObjectId
   name        String
@@ -198,5 +192,5 @@ model Product {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
-  OrderItem OrderItem[]
+  orderItem OrderItem[]
 }

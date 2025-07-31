@@ -14,9 +14,9 @@ export default async function AdminPage() {
     const [userCount, logsCount, revenue] = await Promise.all([
         prisma.user.count(),
         prisma.auditLog.count(),
-        prisma.payment.aggregate({
-            _sum: { amount: true },
-            where: { status: "SUCCESS" },
+        prisma.order.aggregate({
+            _sum: { totalPrice: true },
+            where: { status: "APPROVED" },
         }),
     ]);
 
@@ -35,7 +35,7 @@ export default async function AdminPage() {
         {
             icon: <IndianRupee className="w-5 h-5" />,
             label: "Total Revenue",
-            value: formatCurrency(revenue._sum.amount ?? 125000),
+            value: formatCurrency(revenue._sum.totalPrice ?? 0),
         },
         {
             icon: <Activity className="w-5 h-5" />,
