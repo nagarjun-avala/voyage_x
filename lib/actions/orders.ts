@@ -2,6 +2,8 @@
 "use server"
 import { prisma } from "@/lib/prisma";
 import { ProductCategory } from "@prisma/client";
+import { OrderStatus } from "../types";
+import { getSession, SessionPayload } from "../session";
 
 
 export async function getOrderedStationery() {
@@ -66,20 +68,16 @@ export const getOrdersTest = async () => {
         include: {
             orderedBy: {
                 omit: {
-                    password: true
+                    password: true,
                 }
             },
             items: {
                 include: {
-                    product: {
-                        select: {
-                            category: true,
-                        },
-                    },
+                    product: true, // Include product details
                 },
             },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: "asc" },
     });
 
 
@@ -97,4 +95,21 @@ export const getOrdersTest = async () => {
     }).filter(order => order.items.length > 0); // remove orders that had nothing valid
 
     return filteredOrders
+}
+
+export const changeOrderStatus = async (status: OrderStatus, id: string) => {
+    const session = await getSession() as SessionPayload;
+
+    if (!session || session == undefined || session.role !== "VOYAGER") {
+        console.log("Unauthorized")
+    }
+    const order = await prisma.order.update({
+        where: {
+            id
+        },
+        data: {
+            status: status,
+        },
+    })
+    return order
 }

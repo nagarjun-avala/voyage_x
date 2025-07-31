@@ -1,23 +1,11 @@
 // app/(protected)/admin/bookings/[id]/page.tsx
+"use client"
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import PageHeader from "@/components/ui/PageHeader";
 import { useRouter } from 'next/router'
 import { useEffect, useState } from "react";
 import { Booking } from "@prisma/client";
-
-export const dynamic = "force-dynamic";
-
-export async function generateMetadata({ params }: { params: { id: string } }) {
-    const booking = await prisma.booking.findUnique({
-        where: { id: await params.id },
-        select: { id: true, title: true },
-    });
-
-    return {
-        title: booking ? `${booking.title} | VoyageX` : "Booking Not Found | VoyageX",
-    };
-}
 
 export default function BookingDetailPage() {
     const [booking, setBooking] = useState<Booking | null>(null)

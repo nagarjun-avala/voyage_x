@@ -19,6 +19,7 @@ export interface User {
 export type OrderStatus =
     | "PENDING"
     | "APPROVED"
+    | "COMPLETED"
     | "REJECTED"
     | "RECEIVED"
 

@@ -94,12 +94,20 @@ export const schema = z.object({
 
 export type OrderTableType = z.infer<typeof schema>;
 
+const handleChangeOrderStatus = (status: string, id: string) => {
+    alert(`${status} changed for ${id}`)
+}
+
+const handleOpenDialog = (id: string) => {
+    alert(`You clicked ${id}`)
+}
+
 const columns: ColumnDef<OrderTableType>[] = [
     {
         id: "view",
         header: () => null,
         cell: ({ row }) => (
-            <div className="flex items-center justify-center cursor-pointer" onClick={() => { alert(`You clicked ${row.original.id}`) }}>
+            <div className="flex items-center justify-center cursor-pointer" onClick={() => { handleOpenDialog(row.original.id) }}>
                 <Eye className="w-4 h-4" id={row.original.id} />
             </div>
         )
@@ -147,9 +155,9 @@ const columns: ColumnDef<OrderTableType>[] = [
         ),
     },
     {
-        id: "actions",
+        accessorKey: "id",
         header: () => <div className="w-full">Change status</div>,
-        cell: () => (
+        cell: ({ row }) => (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button
@@ -162,10 +170,16 @@ const columns: ColumnDef<OrderTableType>[] = [
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-32">
-                    <DropdownMenuItem className="text-blue-500"><CircleCheck /> Approve</DropdownMenuItem>
-                    <DropdownMenuItem className="text-emerald-500"><CheckCircle /> Completed</DropdownMenuItem>
+                    <DropdownMenuItem className="text-blue-500" onClick={() => handleChangeOrderStatus("APPROVED", row.original.id)}>
+                        <CircleCheck /> Approve
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-emerald-500">
+                        <CheckCircle /> Completed
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive"><CircleX /> Reject</DropdownMenuItem>
+                    <DropdownMenuItem variant="destructive">
+                        <CircleX /> Reject
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         ),
@@ -174,12 +188,11 @@ const columns: ColumnDef<OrderTableType>[] = [
 
 
 export function OrderDataTable({
-    data: initialData,
+    data: initialData
 }: {
     data: z.infer<typeof schema>[]
 }) {
     const [data, setData] = React.useState<OrderTableType[]>([])
-    console.log("IN_DATA_TABLE:\n", data)
 
     React.useEffect(() => {
         setData(initialData)

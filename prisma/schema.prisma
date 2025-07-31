@@ -79,6 +79,7 @@ enum MealPlan {
 enum OrderStatus {
   PENDING
   APPROVED
+  COMPLETED
   REJECTED
   RECEIVED
 }
