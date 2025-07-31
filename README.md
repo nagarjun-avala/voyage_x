@@ -142,6 +142,12 @@ supervisor: supervisor123
 - [ ] Voyager mobile view optimization
 - [ ] Invite-based user onboarding
 
+## Role Based Check list
+
+- &#x2611; Supervisore Pages
+- &#x2611; Head Cook Pages
+- &#x2610; Admin Pages
+
 ---
 
 ## 🤝 Acknowledgments

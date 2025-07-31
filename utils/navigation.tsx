@@ -10,6 +10,7 @@ import {
     List,
     ScrollText,
     SquareMenu,
+    ChefHat,
 } from "lucide-react";
 
 export type Role = "ADMIN" | "MANAGER" | "HEADCOOK" | "SUPERVISOR" | "VOYAGER";
@@ -168,14 +169,9 @@ export const sidebarConfig: Record<Role, SidebarSection[]> = {
             label: "General",
             items: [
                 {
-                    title: "Dashboard",
-                    href: "/dashboard",
-                    icon: <LayoutDashboard className="w-5 h-5" />,
-                },
-                {
-                    title: "Crew Control",
-                    href: "/headcook/crew",
-                    icon: <UserCog className="w-5 h-5" />,
+                    title: "Headcook Orders",
+                    href: "/headcook",
+                    icon: <ChefHat className="w-5 h-5" />,
                 },
             ]
         }

@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { changeOrderStatus, getOrdersTest } from "@/lib/actions/orders";
+import { changeOrderStatus, getOrderedStationery } from "@/lib/actions/orders";
 import { Order, OrderStatus } from "@/lib/types";
-import { CheckCircle, Loader } from "lucide-react";
-import { IconExclamationCircle } from "@tabler/icons-react";
+import { CheckCircle } from "lucide-react";
+import { IconHourglassHigh, IconThumbUp, IconX } from "@tabler/icons-react";
 import { toast } from "sonner";
 import {
     Tabs,
@@ -14,9 +14,11 @@ import {
 } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import OrderCard from "./_componenst/OrderCard";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import OrderCardList from "@/components/OrderCardList";
 
-export default function StationeryPage() {
+export default function CateringPage() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [filter, setFilter] = useState("ALL");
     const [loading, setLoading] = useState(false);
@@ -27,7 +29,7 @@ export default function StationeryPage() {
     const fetchOrders = useCallback(async () => {
         try {
             setLoading(true);
-            const res = await getOrdersTest();
+            const res = await getOrderedStationery();
             const parsedOrders = res as unknown as Order[];
             setOrders(parsedOrders);
 
@@ -76,26 +78,38 @@ export default function StationeryPage() {
         }
     };
 
+    const getStatusIcon = (status: OrderStatus) => {
+        switch (status) {
+            case "PENDING":
+                return <IconHourglassHigh className="w-3 h-3" />;
+            case "APPROVED":
+                return <IconThumbUp className="w-3 h-3" />;
+            case "REJECTED":
+                return <IconX className="w-3 h-3" />;
+            case "COMPLETED":
+                return <CheckCircle className="w-3 h-3" />;
+            default:
+                return null;
+        }
+    };
+
     return (
         <Card>
             <CardHeader>
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                    <h1 className="text-xl md:text-2xl font-bold">Ordered Stationery</h1>
+                    <h1 className="text-xl md:text-2xl font-bold">Ordered Stationay</h1>
 
                     <div className="flex flex-wrap gap-4 md:gap-6 items-center text-sm">
                         <div className="flex items-center gap-1 text-orange-600">
-                            <Loader className="animate-spin h-3 w-3" />
-                            Pending - {pendingOrders}
+                            {getStatusIcon("PENDING")} Pending - {pendingOrders}
                         </div>
 
                         <div className="flex items-center gap-1 text-emerald-500">
-                            <CheckCircle className="w-3 h-3" />
-                            Approved - {approvedOrders}
+                            {getStatusIcon("APPROVED")} Approved - {approvedOrders}
                         </div>
 
                         <div className="flex items-center gap-1 text-destructive">
-                            <IconExclamationCircle className="w-3 h-3" />
-                            Rejected - {rejectedOrders}
+                            {getStatusIcon("REJECTED")} Rejected - {rejectedOrders}
                         </div>
 
                         <Button
@@ -125,24 +139,35 @@ export default function StationeryPage() {
                     </TabsList>
 
                     <TabsContent value={filter}>
-                        {loading ? (
-                            <div className="flex justify-center items-center py-10">
-                                <Loader className="h-6 w-6 animate-spin text-muted-foreground" />
-                            </div>
-                        ) : filteredOrders.length === 0 ? (
+                        {filteredOrders.length === 0 ? (
                             <div className="flex items-center justify-center h-24 text-center text-muted-foreground">
-                                No orders found.
+                                No catering orders found.
                             </div>
                         ) : (
-                            <div className="flex flex-col gap-3">
-                                {filteredOrders.map((order) => (
-                                    <OrderCard
-                                        key={order.id}
-                                        order={order}
+                            <DndContext
+                                collisionDetection={closestCenter}
+                                onDragEnd={async (event) => {
+                                    const { active, over } = event;
+                                    if (active?.id && over?.id && active.id !== over.id) {
+                                        const draggedOrder = orders.find((o) => o.id === active.id);
+                                        const droppedOnOrder = orders.find((o) => o.id === over.id);
+                                        if (draggedOrder && droppedOnOrder && draggedOrder.status !== droppedOnOrder.status) {
+                                            await handleChangeOrderStatus({
+                                                status: droppedOnOrder.status,
+                                                id: draggedOrder.id,
+                                            });
+                                        }
+                                    }
+                                }}
+                            >
+                                <SortableContext items={filteredOrders} strategy={verticalListSortingStrategy}>
+                                    <OrderCardList
+                                        isLoading={loading}
+                                        orders={filteredOrders}
                                         onStatusChange={handleChangeOrderStatus}
                                     />
-                                ))}
-                            </div>
+                                </SortableContext>
+                            </DndContext>
                         )}
                     </TabsContent>
                 </Tabs>
