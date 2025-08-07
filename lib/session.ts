@@ -9,7 +9,11 @@ export type SessionPayload = {
     role: string;
 };
 
-const secretKey = process.env.JWT_SECRET ?? "wsfksjfbslifbsifbsifb";
+if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is not set in environment variables.");
+}
+const secretKey = process.env.JWT_SECRET;
+
 const encodedKey = new TextEncoder().encode(secretKey)
 
 export async function createSession(userId: string, role: string) {
@@ -42,7 +46,7 @@ export async function encrypt(payload: SessionPayload): Promise<string> {
     return token;
 }
 
-export async function decrypt(session: string | undefined = '') {
+export async function decrypt(session: string | undefined | '') {
     try {
         if (session === '') return null;
         if (!session) return null;
@@ -51,7 +55,10 @@ export async function decrypt(session: string | undefined = '') {
         })
         return payload
     } catch (error) {
-        console.log('Failed to verify session', error)
+        if (process.env.NODE_ENV === "development") {
+            console.error("Session verification failed", error);
+        }
+
         return null
     }
 }

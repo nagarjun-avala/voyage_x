@@ -2,10 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CircleCheck, Eye, Loader, Trash2 } from "lucide-react";
+import { CircleCheck, Loader, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
 import { Metadata } from "next";
@@ -28,7 +27,8 @@ export default async function BookingDetailPage({ params }: PageProps) {
     if (!session?.userId) {
         return <div className="text-red-500">Unauthorized</div>;
     }
-    const bookingId = await params.id;
+
+    const bookingId = params.id;
     if (!bookingId) {
         return notFound();
     }
